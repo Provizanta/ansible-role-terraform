@@ -1,0 +1,27 @@
+---
+
+- name: establish pre-requisites
+  become: true
+  when: "(ansible_system | lower) != 'windows'"
+  package:
+    name: unzip
+    state: present
+  tags: install
+
+- name: check terraform existence
+  command: "terraform --version"
+  register: v
+  changed_when: false
+  failed_when: false
+  tags: install
+
+# from https://terraform.io/downloads.html
+- name: establish (download) binary
+  when: v['stdout'] is not defined or terraform_version not in v.stdout
+  become: true
+  unarchive:
+    src: https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_{{ ansible_system | lower }}_{{ terraform_architecture }}.zip  # noqa 204
+    dest: "{{ terraform_binary_dir_path }}"
+    remote_src: true
+    creates: "{{ terraform_binary_dir_path }}/terraform"
+  tags: install

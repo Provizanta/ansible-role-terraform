@@ -1,0 +1,23 @@
+---
+
+- name: Converge
+  hosts: all
+  vars:
+    version: '0.12.24'
+  roles:
+    - role: terraform
+      vars:
+        terraform_version: "{{ version }}"
+        terraform_binary_dir_path: /usr/bin
+
+  post_tasks:
+    - name: terraform should be installed
+      block:
+        - name: check terraform version
+          command: '/usr/bin/terraform --version'
+          changed_when: false
+          register: r
+        - name: evaluate file presence
+          assert:
+            that: version in r.stdout
+            fail_msg: "terraform should be installed with a correct version"

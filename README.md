@@ -1,0 +1,50 @@
+Ansible role: LXD
+=========
+
+[![Build Status](https://travis-ci.com/Provizanta/ansible-role-terraform.svg?branch=master)](https://travis-ci.com/Provizanta/ansible-role-terraform)
+
+Establish and configure Hashicorp Terraform.
+
+Requirements
+------------
+
+None
+
+Role Variables
+--------------
+
+These variables are defined in [defaults/main.yml](./defaults/main.yml):
+
+    terraform_architecture: 'amd64'    # enum, one of 386|amd64|arm
+
+    terraform_version: '0.12.24'
+
+    terraform_binary_dir_path: "/usr/local/bin"
+
+Dependencies
+------------
+
+None
+
+Example Playbook
+----------------
+
+    - name: Converge
+      hosts: all
+      vars:
+        version: '0.12.24'
+      roles:
+        - role: terraform
+          vars:
+            terraform_version: "{{ version }}"
+            terraform_binary_dir_path: /usr/bin
+
+License
+-------
+
+MIT
+
+Author Information
+------------------
+
+Tibor Csóka

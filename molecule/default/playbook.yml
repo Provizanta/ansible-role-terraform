@@ -5,7 +5,7 @@
   vars:
     version: '0.12.24'
   roles:
-    - role: terraform
+    - role: ansible-role-terraform
       vars:
         terraform_version: "{{ version }}"
         terraform_binary_dir_path: /usr/bin

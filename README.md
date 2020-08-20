@@ -1,7 +1,7 @@
-Ansible role: LXD
+Ansible role: Terraform
 =========
 
-[![Build Status](https://travis-ci.com/Provizanta/ansible-role-terraform.svg?branch=master)](https://travis-ci.com/Provizanta/ansible-role-terraform)
+![Build & Deploy](https://github.com/Provizanta/ansible-role-terraform/workflows/molecule/badge.svg?branch=master)
 
 Establish and configure Hashicorp Terraform.
 

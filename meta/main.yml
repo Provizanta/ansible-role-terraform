@@ -1,7 +1,7 @@
 ---
 
 galaxy_info:
-  role_name:
+  role_name: terraform
   author: Tibor Csoka
   description: |
     "Install and setup Hashicorp Terraform."

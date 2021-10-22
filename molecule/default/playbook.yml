@@ -9,6 +9,8 @@
       vars:
         terraform_version: "{{ version }}"
         terraform_binary_dir_path: /usr/bin
+        terraform_plugin_urls:
+          - https://github.com/dmacvicar/terraform-provider-libvirt/releases/download/v0.6.11/terraform-provider-libvirt_0.6.11_linux_amd64.zip
 
   post_tasks:
     - name: terraform should be installed

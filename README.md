@@ -21,6 +21,8 @@ These variables are defined in [defaults/main.yml](./defaults/main.yml):
 
     terraform_binary_dir_path: "/usr/local/bin"
 
+    terraform_plugin_urls: []
+
 Dependencies
 ------------
 

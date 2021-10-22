@@ -17,7 +17,9 @@
 
 # from https://terraform.io/downloads.html
 - name: establish (download) binary
-  when: v['stdout'] is not defined or terraform_version not in v.stdout
+  when: >-
+    v['stdout'] is not defined or
+    terraform_version not in v.stdout
   become: true
   unarchive:
     src: https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_{{ ansible_system | lower }}_{{ terraform_architecture }}.zip  # noqa 204
@@ -25,3 +27,25 @@
     remote_src: true
     creates: "{{ terraform_binary_dir_path }}/terraform"
   tags: install
+
+- name: establish plugins
+  when: terraform_plugin_urls  | length > 0
+  tags: install
+  block:
+    - name: establish plugins directory
+      loop:
+        - .terraform.d/
+        - .terraform.d/plugins/
+      file:
+        path: "{{ ansible_env.HOME }}/{{ item }}"
+        state: directory
+        owner: "{{ ansible_env.USER | default(ansible_user_id) }}"
+        group: "{{ ansible_env.USER | default(ansible_user_id) }}"
+        mode: "u=rwx,go=rx"
+
+    - name: establish plugins
+      loop: "{{ terraform_plugin_urls }}"
+      unarchive:
+        src: "{{ item }}"
+        dest: "{{ ansible_env.HOME }}/.terraform.d/plugins/"
+        remote_src: true

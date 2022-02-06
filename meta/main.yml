@@ -2,6 +2,7 @@
 
 galaxy_info:
   role_name: terraform
+  namespace: provizanta
   author: Tibor Csoka
   description: |
     "Install and setup Hashicorp Terraform."

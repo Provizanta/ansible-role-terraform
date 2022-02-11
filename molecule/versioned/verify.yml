@@ -1,0 +1,14 @@
+---
+
+- name: Verify
+  hosts: all
+  vars:
+    version: '0.12.24'
+  tasks:
+    - name: terraform should be installed
+      block:
+        - name: check terraform version
+          command: 'terraform --version'
+          changed_when: false
+          register: r
+          failed_when: not version in r.stdout

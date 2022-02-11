@@ -1,0 +1,27 @@
+---
+
+- name: establish prerequisites
+  package:
+    name:
+      - gpg-agent
+    state: present
+
+- name: establish repo key
+  become: true
+  ansible.builtin.apt_key:
+    url: https://apt.releases.hashicorp.com/gpg
+    state: present
+
+- name: establish repo
+  become: true
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"
+    state: present
+    filename: terraform
+
+- name: install package
+  become: true
+  package:
+    name:
+      - terraform
+    state: present

@@ -1,0 +1,42 @@
+---
+
+- name: establish prerequisites
+  become: true
+  vars:
+    prereq:
+      CentOS: yum-utils
+      Fedora: dnf-plugins-core
+      Amazon: yum-utils
+  package:
+    name: "{{ prereq[ansible_facts['distribution']] }}"
+    state: present
+
+- name: establish repo
+  become: true
+  when: ansible_facts['distribution'] in ['CentOS', 'Amazon']
+  vars:
+    type:
+      CentOS: RHEL
+      Amazon: AmazonLinux
+  ansible.builtin.yum_repository:
+    name: hashicorp
+    description: "Hashicorp repository"
+    baseurl: https://rpm.releases.hashicorp.com/{{ type[ansible_facts['distribution']] }}/hashicorp.repo
+    file: hashicorp
+    state: present
+
+- name: establish repo
+  become: true
+  when: ansible_facts['distribution'] in ['Fedora']
+  command:
+    cmd: dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
+    warn: false
+  args:
+    creates: /etc/yum.repos.d/hashicorp.repo
+
+- name: establish package
+  become: true
+  package:
+    name:
+      - terraform
+    state: present

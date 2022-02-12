@@ -24,7 +24,7 @@ galaxy_info:
         - all
     - name: EL
       versions:
-        - 7
+        - all
 
   galaxy_tags:
     - terraform

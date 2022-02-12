@@ -1,0 +1,10 @@
+---
+
+- name: Verify
+  hosts: all
+  tasks:
+    - name: terraform should be installed
+      block:
+        - name: check terraform version
+          command: '/usr/bin/terraform --version'
+          changed_when: false

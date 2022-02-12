@@ -11,7 +11,7 @@ on:
       - master
 
 jobs:
-  test:
+  test_default:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -19,26 +19,59 @@ jobs:
         distro:
           - ubuntu2004
           - ubuntu1804
-          - ubuntu1604
-          - centos7
-          - centos8
-          - debian9
+          # - centos7
+          # - centos8
           - debian10
-          - fedora29
+          - debian11
+          - fedora35
+          # - amazonlinux2
     steps:
       - name: checkout the repository
         uses: actions/checkout@v2
         with:
           path: "${{ github.repository }}"
 
-      - name: run molecule
-        uses: robertdebock/molecule-action@2.6.1
+      - name: run molecule (default scenario)
+        uses: robertdebock/molecule-action@4.0.7
+        with:
+          command: "test"
+        env:
+          MOLECULE_DISTRO: ${{ matrix.distro }}
+
+  test_versioned:
+    needs:
+      - test_default
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        distro:
+          - ubuntu2004
+          - ubuntu1804
+          - centos7
+          - centos8
+          - debian10
+          - debian11
+          - fedora35
+          - amazonlinux2
+    steps:
+      - name: checkout the repository
+        uses: actions/checkout@v2
+        with:
+          path: "${{ github.repository }}"
+
+      - name: run molecule (versioned scenario)
+        uses: robertdebock/molecule-action@4.0.7
+        with:
+          scenario: versioned
+          command: "test"
         env:
           MOLECULE_DISTRO: ${{ matrix.distro }}
 
   deploy:
     needs:
-      - test
+      - test_default
+      - test_versioned
     runs-on: ubuntu-latest
     steps:
       - name: to Ansible Galaxy

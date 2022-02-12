@@ -15,17 +15,27 @@
   failed_when: false
   tags: install
 
-# from https://terraform.io/downloads.html
-- name: establish (download) binary
-  when: >-
-    v['stdout'] is not defined or
-    terraform_version not in v.stdout
+- name: establish explicit version
+  when:
+    - terraform_version is defined
+    - v['stdout'] is not defined or terraform_version not in v.stdout
+  vars:
+    terraform_architecture: "{{ (ansible_architecture == 'x86_64')
+      | ternary(((ansible_userspace_bits | int) == 64)
+        | ternary('amd64','386'),
+        'arm') | default('amd64') }}"
   become: true
   unarchive:
     src: https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_{{ ansible_system | lower }}_{{ terraform_architecture }}.zip  # noqa 204
     dest: "{{ terraform_binary_dir_path }}"
     remote_src: true
     creates: "{{ terraform_binary_dir_path }}/terraform"
+  tags: install
+
+# https://www.terraform.io/downloads
+- name: install package
+  when: not terraform_version is defined
+  include_tasks: "{{ ansible_os_family }}.yml"
   tags: install
 
 - name: establish plugins
